@@ -24,7 +24,7 @@ public class OrderController {
 
     @PostMapping()
     ResponseEntity<Object> create(@RequestBody Order body) {
-        var order = new Order();
+        Order order = new Order();
         order.setName(body.getName());
         orderRepo.save(order);
 

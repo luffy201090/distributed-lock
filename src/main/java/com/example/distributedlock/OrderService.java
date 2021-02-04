@@ -5,6 +5,7 @@ import org.springframework.integration.support.locks.LockRegistry;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.*;
 
 @Service
 public class OrderService {
@@ -15,9 +16,9 @@ public class OrderService {
     LockRegistry lockRegistry;
 
     public Order updateOrder(Long orderId, Order body) throws InterruptedException {
-        var lock = lockRegistry.obtain(String.valueOf(orderId));
+        Lock lock = lockRegistry.obtain(String.valueOf(orderId));
 
-        var order = orderRepo.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepo.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
         boolean isAcquired = lock.tryLock(1, TimeUnit.SECONDS);
         if(isAcquired) {
             try {
